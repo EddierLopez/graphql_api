@@ -1,0 +1,43 @@
+type Query{
+    user(id:ID!):User
+    task(id:ID!):Task
+    tasks(limit:Int):TaskSubList
+}
+
+type User{
+    id:ID!
+    name:String!
+    last_name:String
+    email:String
+    tasks:[Task]
+}
+type Task{
+    id:ID!
+    name:String!
+    deadline:String
+    created_at:String
+    capture:String
+    user:User
+}
+type TaskSubList{
+    items:[Task]!
+}
+
+type Mutation{
+    createTask(input:NewTaskInput!):Task
+    updateTask(input:TaskInput!):Task
+    deleteTask(id:ID!):Task
+}
+
+input NewTaskInput{
+    name:String!
+    deadline:String!
+    capture:String
+    user_id:String!
+}
+input TaskInput{
+    id:ID!
+    name:String!
+    deadline:String!
+    capture:String
+}
