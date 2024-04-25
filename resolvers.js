@@ -17,10 +17,37 @@ export const resolvers={
             return task;
         },
         tasks:(_root,{limit})=>{
-
+            const items=getTasks(limit);
+            return {items};
         }
     },
     Mutation:{
+        createTask:(_root,{input:{name,deadline,capture}},{auth})=>{
+            if(!auth){
+                throw new GraphQLError("Usuario no autenticado",{extensions:{code:'UNAUTHORIZED'}});
+            }
+            return createTask({name,deadline,capture,user_id:auth.sub});
+        },
+        updateTask:(_root,{input:{id,name,deadline,capture}},{auth})=>{
+            if(!auth){
+                throw new GraphQLError("Usuario no autenticado",{extensions:{code:'UNAUTHORIZED'}});
+            }
+            const task=updateTask(input);
+            if(!task){
+                throw new GraphQLError("No existe tarea",{extensions:{code:'NOT_FOUND'}});
+            }
+            return task;
+        },
+        deleteTask:(_root,{id},{auth})=>{
+            if(!auth){
+                throw new GraphQLError("Usuario no autenticado",{extensions:{code:'UNAUTHORIZED'}});
+            }
+            const task=deleteTask(id);
+            if(!task){
+                throw new GraphQLError("No existe tarea",{extensions:{code:'NOT_FOUND'}});
+            }
+            return task;
+        },
 
     },
 }

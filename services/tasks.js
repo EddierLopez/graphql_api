@@ -26,8 +26,19 @@ export async function createTask({name,deadline,capture,user_id}){
     return task;
 }
 export async function updateTask({id,name,deadline,capture}){
-
+    const task=await taskTable().first().where({id});
+    if(!task){
+        return null;
+    }
+    const updateFields={name,deadline,capture};
+    await taskTable().update(updateFields).where({id});
+    return{...task,...updateFields};
 }
 export async function deleteTask(id){
-
+    const task=await taskTable().first().where({id});
+    if(!task){
+        return null;
+    }
+    await taskTable().delete().where({id});
+    return task;
 }

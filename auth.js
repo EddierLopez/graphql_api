@@ -1,5 +1,6 @@
 import { expressjwt } from "express-jwt";
 import jwt from 'jsonwebtoken';
+import { getUserByEmail } from "./services/users.js";
 
 const secret=Buffer.from('asdsssaqwqerrxss','base64');
 export const authMiddleware=expressjwt({
@@ -9,10 +10,12 @@ export const authMiddleware=expressjwt({
 });
 export async function login(req,res){
     const {email,password}=req.body;
-    if(email==="eddier@una.cr"&&password==="1234"){
-        const claims={sub:1,email:"eddier@una.cr"};
-        const token=jwt.sign(claims,secret);
+    const user=await getUserByEmail(email);
+    if(!user||user.password!==password){
+        res.sendStatus(401);
     }else{
-        res.sendStatus(404);
-    }   
+        const claims={sub:user.id,email:user.email,name:user.name};
+        const token=jwt.sign(claims,secret);
+        res.json({token});
+    }
 }

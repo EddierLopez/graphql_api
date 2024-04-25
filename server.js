@@ -15,7 +15,12 @@ app.post('/login',login);
 const typeDefs=await readFile('./schema.graphql','utf8');
 const server=new ApolloServer({typeDefs,resolvers});
 await server.start();
-app.use('/graphql',middleware(server));
+
+async function getContext({req}){
+    return {auth:req.auth};
+};
+
+app.use('/graphql',middleware(server,{context:getContext}));
 app.listen({port:PORT},()=>{
     console.log(` Servidor corriendo en http://localhost:${PORT}/graphql`);
 });

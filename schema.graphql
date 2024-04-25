@@ -33,7 +33,7 @@ input NewTaskInput{
     name:String!
     deadline:String!
     capture:String
-    user_id:String!
+    user_id:String
 }
 input TaskInput{
     id:ID!
