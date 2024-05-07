@@ -20,7 +20,7 @@ export async function createTask({name,deadline,capture,user_id}){
         deadline,
         capture,
         user_id,
-        created_at:new Date().toISOString,
+        created_at:new Date().toISOString(),
     };
     await taskTable().insert(task);
     return task;
