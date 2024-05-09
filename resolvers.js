@@ -1,6 +1,9 @@
-import { GraphQLError } from "graphql";
+import { GraphQLError, subscribe } from "graphql";
 import {getTask,getTasks,updateTask,createTask,deleteTask} from './services/tasks.js';
+import { getUser } from "./services/users.js";
+import {PubSub} from 'graphql-subscriptions';
 
+const pubSub=new PubSub();
 export const resolvers={
     Query:{
         user:(_root,{id})=>{
@@ -21,12 +24,22 @@ export const resolvers={
             return {items};
         }
     },
+    Task:{
+        user:async (task)=>{
+            return await getUser(task.user_id);
+        },
+        created_at:(task)=>{
+            return task.created_at.slice(0,'yyyy-mm-dd'.length);
+        },
+    },
     Mutation:{
-        createTask:(_root,{input:{name,deadline,capture}},{auth})=>{
+        createTask:async (_root,{input:{name,deadline,capture}},{auth})=>{
             if(!auth){
                 throw new GraphQLError("Usuario no autenticado",{extensions:{code:'UNAUTHORIZED'}});
             }
-            return createTask({name,deadline,capture,user_id:auth.sub});
+            const task= await createTask({name,deadline,capture,user_id:auth.sub});
+            pubSub.publish('TASK_ADDED',{newTask:task});
+            return task;
         },
         updateTask:(_root,{input:{id,name,deadline,capture}},{auth})=>{
             if(!auth){
@@ -50,4 +63,12 @@ export const resolvers={
         },
 
     },
+    Subscription:{
+        newTask:{
+            subscribe:(_, args,{user})=>{
+                return pubSub.asyncIterator('TASK_ADDED');
+            },
+        }
+    },
+    
 }

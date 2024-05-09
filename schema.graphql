@@ -17,7 +17,7 @@ type Task{
     deadline:String
     created_at:String
     capture:String
-    user:User
+    user:User!
 }
 type TaskSubList{
     items:[Task]!
@@ -40,4 +40,7 @@ input TaskInput{
     name:String!
     deadline:String!
     capture:String
+}
+type Subscription{
+    newTask:Task
 }
