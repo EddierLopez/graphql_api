@@ -19,3 +19,11 @@ export async function login(req,res){
         res.json({token});
     }
 }
+export async function decodeToken(token){
+    try{
+        return jwt.verify(token,secret)
+    }catch(e){
+        console.log('Error al decodificar el token',e)
+        return null
+    }
+}   

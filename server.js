@@ -1,7 +1,7 @@
 import { ApolloServer } from "@apollo/server";
 import {expressMiddleware as middleware} from "@apollo/server/express4";
 import express from 'express';
-import {authMiddleware,login} from './auth.js';
+import {authMiddleware,login,decodeToken} from './auth.js';
 import cors from 'cors';
 import { resolvers } from "./resolvers.js";
 import {readFile} from 'node:fs/promises';

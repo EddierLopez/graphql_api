@@ -66,6 +66,7 @@ export const resolvers={
     Subscription:{
         newTask:{
             subscribe:(_, args,{user})=>{
+                console.log(user);
                 return pubSub.asyncIterator('TASK_ADDED');
             },
         }
